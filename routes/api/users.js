@@ -1,16 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const keys = require("../../config/keys");
+const passport = require("passport");
 
 const User = require("../../models/User");
 
 const gravatar = require("gravatar");
-
-//@route GET to api/users/test
-//@description Tests users route
-//@ access Public
-
-router.get("/test", (req, res) => res.json({ message: "Coucou Hugo" }));
 
 //@route GET to api/users/register
 //@description Tests users route
@@ -49,5 +46,83 @@ router.post("/register", (req, res) => {
     }
   });
 });
+
+//@route GET to api/users/login
+//@description login user : returning JWT token
+//@ access Public
+
+router.post("/login", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  User.findOne({ email }).then(user => {
+    if (!user) {
+      return res.status(404).json({ email: "Email not found" });
+    }
+    bcrypt.compare(password, user.password).then(isMatch => {
+      if (isMatch) {
+        //User match
+        const payload = { id: user.id, name: user.name, avatar: user.avatar };
+
+        //Sign token
+        jwt.sign(
+          payload,
+          keys.secretOrKey,
+          { expiresIn: 3600 },
+          (err, token) => {
+            res.json({
+              success: true,
+              token: `Bearer ${token}`,
+            });
+          },
+        );
+      } else {
+        return res.status(400).json({ message: "Incorrect Password" });
+      }
+    });
+  });
+});
+
+//@route GET to api/users/current
+//@description Return Current User
+//@access      Private
+
+const authCallback = function(err, user, info) {
+  if (user) {
+    console.log("user from callback: ", user);
+    res.json({ msg: "success" });
+  } else {
+    console.log("else", err, info);
+  }
+};
+
+router.get("/current", (req, res, next) => {
+  passport.authenticate("jwt", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.json({ message: info.message });
+    }
+    res.json({
+      msg: "Auth Success",
+      user: user.name,
+      id: user.id,
+      email: user.email,
+    });
+  })(req, res, next);
+});
+
+/* if (user) {
+      console.log("user: ", user);
+      //user.json({ message: "user is auth" });
+    } else {
+      console.log("err", err);
+    } */
+/*  res.json({
+      id: req.user.id,
+      name: req.user.name,
+      email: req.user.email,
+    }); */
 
 module.exports = router;
