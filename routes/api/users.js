@@ -9,6 +9,10 @@ const User = require("../../models/User");
 
 const gravatar = require("gravatar");
 
+//load Input Validation
+const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
+
 //@route GET to api/users/register
 //@description Tests users route
 //@ access Public
@@ -16,9 +20,16 @@ const gravatar = require("gravatar");
 router.get("/users", (req, res) => res.json({}));
 
 router.post("/register", (req, res) => {
+  const { errors, isValid } = validateRegisterInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
-      return res.status(400).json("Email already exists");
+      errors.email = "Email already exists";
+      return res.status(400).json(errors);
     } else {
       const avatar = gravatar.url(req.body.email, {
         s: "200", // Size
@@ -55,9 +66,16 @@ router.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   User.findOne({ email }).then(user => {
     if (!user) {
-      return res.status(404).json({ email: "Email not found" });
+      errors.email = "User not found";
+      return res.status(404).json(errors);
     }
     bcrypt.compare(password, user.password).then(isMatch => {
       if (isMatch) {
@@ -77,7 +95,8 @@ router.post("/login", (req, res) => {
           },
         );
       } else {
-        return res.status(400).json({ message: "Incorrect Password" });
+        errors.password = "Incorrect Password";
+        return res.status(400).json(errors);
       }
     });
   });
@@ -86,15 +105,6 @@ router.post("/login", (req, res) => {
 //@route GET to api/users/current
 //@description Return Current User
 //@access      Private
-
-const authCallback = function(err, user, info) {
-  if (user) {
-    console.log("user from callback: ", user);
-    res.json({ msg: "success" });
-  } else {
-    console.log("else", err, info);
-  }
-};
 
 router.get("/current", (req, res, next) => {
   passport.authenticate("jwt", (err, user, info) => {
