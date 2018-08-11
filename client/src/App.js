@@ -9,20 +9,25 @@ import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import "./App.css";
 
+import { Provider } from "react-redux";
+import store from "./store";
+
 class App extends Component {
   render() {
     return (
-      <Router>
-        <div className="App">
-          <Navbar />
-          <Route exact path="/" component={Landing} />
-          <div className="container">
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
+      <Provider store={store}>
+        <Router>
+          <div className="App">
+            <Navbar />
+            <Route exact path="/" component={Landing} />
+            <div className="container">
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+            </div>
+            <Footer />
           </div>
-          <Footer />
-        </div>
-      </Router>
+        </Router>
+      </Provider>
     );
   }
 }
