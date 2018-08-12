@@ -14,7 +14,7 @@ import store from "./store";
 
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
-import { setCurrentUser } from "./actions/authActions";
+import { setCurrentUser, logOutUser } from "./actions/authActions";
 
 //check for token
 if (localStorage.jwtToken) {
@@ -26,6 +26,17 @@ if (localStorage.jwtToken) {
 
   //set Current user
   store.dispatch(setCurrentUser(decoded));
+
+  //check for expire token
+  const currentTime = Date.now() / 1000;
+  if (decoded.exp < currentTime) {
+    this.store.dispatch(logOutUser());
+    //TODO : clear current profile
+
+    //Redirect to Login
+    window.location.href = "/login";
+  } else {
+  }
 }
 
 class App extends Component {
