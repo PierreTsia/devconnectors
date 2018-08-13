@@ -123,16 +123,4 @@ router.get("/current", (req, res, next) => {
   })(req, res, next);
 });
 
-/* if (user) {
-      console.log("user: ", user);
-      //user.json({ message: "user is auth" });
-    } else {
-      console.log("err", err);
-    } */
-/*  res.json({
-      id: req.user.id,
-      name: req.user.name,
-      email: req.user.email,
-    }); */
-
 module.exports = router;
