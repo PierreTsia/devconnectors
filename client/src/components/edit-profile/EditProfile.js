@@ -5,26 +5,17 @@ import TextFieldGroup from "../../components/common/TextFieldGroup";
 import TextAreaFieldGroup from "../../components/common/TextAreaFieldGroup";
 import InputGroup from "../../components/common/InputGroup";
 import SelectListGroup from "../common/SelectListGroup";
-import { createProfile } from "../../actions/profileAction";
+import { createProfile, getCurrentProfile } from "../../actions/profileAction";
+import CreateProfile from "../create-profile/CreateProfile";
+import isEmpty from "../../validation/is-empty";
 
-class CreateProfile extends Component {
+class EditProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       displaySocialInputs: false,
-      handle: "",
-      company: "",
-      website: "",
-      location: "",
-      status: "",
-      skills: "",
-      githubusername: "",
-      bio: "",
-      twitter: "",
-      facebook: "",
-      linkedin: "",
-      youtube: "",
-      instagram: "",
+      profile: {},
+
       errors: {},
     };
 
@@ -33,9 +24,60 @@ class CreateProfile extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log("nextProps: ", nextProps);
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
+    if (nextProps.profile.profile) {
+      const profile = nextProps.profile.profile;
+
+      const skillsCSV = profile.skills.join(",");
+      console.log("skillsCSV: ", skillsCSV);
+
+      profile.company = !isEmpty(profile.company) ? profile.company : "";
+      profile.website = !isEmpty(profile.website) ? profile.website : "";
+      profile.location = !isEmpty(profile.location) ? profile.location : "";
+      profile.githubusername = !isEmpty(profile.githubusername)
+        ? profile.githubusername
+        : "";
+      profile.bio = !isEmpty(profile.bio) ? profile.bio : "";
+      profile.social = !isEmpty(profile.social) ? profile.social : {};
+      profile.twitter = !isEmpty(profile.social.twitter) ? profile.twitter : "";
+      profile.facebook = !isEmpty(profile.social.facebook)
+        ? profile.facebook
+        : "";
+      profile.instagram = !isEmpty(profile.social.instagram)
+        ? profile.instagram
+        : "";
+
+      profile.linkedin = !isEmpty(profile.social.linkedin)
+        ? profile.social.linkedin
+        : "";
+      profile.youtube = !isEmpty(profile.social.youtube)
+        ? profile.social.youtube
+        : "";
+
+      this.setState({
+        skills: skillsCSV,
+        bio: profile.bio,
+        company: profile.company,
+        website: profile.website,
+        githubusername: profile.githubusername,
+        facebook: profile.facebook,
+        twitter: profile.twitter,
+        linkedin: profile.linkedin,
+        instagram: profile.instagram,
+        location: profile.location,
+        youtube: profile.youtube,
+        status: profile.status,
+        handle: profile.handle,
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.props.getCurrentProfile();
+    console.log(this.props);
   }
 
   /*   componentDidMount() {
@@ -55,13 +97,11 @@ class CreateProfile extends Component {
       skills: this.state.skills,
       githubusername: this.state.githubusername,
       bio: this.state.bio,
-      social: {
-        twitter: this.state.twitter,
-        facebook: this.state.facebook,
-        linkedin: this.state.linkedin,
-        youtube: this.state.youtube,
-        instagram: this.state.instagram,
-      },
+      twitter: this.state.twitter,
+      facebook: this.state.facebook,
+      linkedin: this.state.linkedin,
+      youtube: this.state.youtube,
+      instagram: this.state.instagram,
     };
 
     this.props.createProfile(newProfile, this.props.history);
@@ -92,31 +132,31 @@ class CreateProfile extends Component {
         name: "twitter",
         placeholder: "Twitter Account",
         icon: "fab fa-twitter",
-        value: this.twitter,
+        value: "",
       },
       {
         name: "linkedin",
         placeholder: "LinkedIn Profile",
         icon: "fab fa-linkedin",
-        value: this.linkedin,
+        value: "",
       },
       {
         name: "Facebook",
         placeholder: "Facebook Profile",
         icon: "fab fa-facebook",
-        value: this.facebook,
+        value: "",
       },
       {
         name: "instagram",
         placeholder: "Instagram Account",
         icon: "fab fa-instagram",
-        value: this.instagram,
+        value: "this.instagram",
       },
       {
         name: "youtube",
         placeholder: "Youtube Channel",
         icon: "fab fa-youtube",
-        value: this.youtube,
+        value: "this.state.youtube",
       },
     ];
 
@@ -142,9 +182,9 @@ class CreateProfile extends Component {
         <div className="container">
           <div className="row">
             <div className="col-md8 m-auto">
-              <h1 className="display-4 text-center">Create your profile.</h1>
+              <h1 className="display-4 text-center">Edit your profile.</h1>
               <p className="lead text-center">
-                Let's get some informations to make your profile stand-out
+                Want to add or edit some details ? This is the way
               </p>
               <small className="d-block pb-3">* = required field</small>
               <form onSubmit={this.onSubmit}>
@@ -243,7 +283,9 @@ class CreateProfile extends Component {
   }
 }
 
-CreateProfile.propTypes = {
+EditProfile.propTypes = {
+  getCurrentProfile: PropTypes.func.isRequired,
+  createProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   errors: PropTypes.object,
 };
@@ -255,5 +297,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { createProfile },
-)(CreateProfile);
+  { createProfile, getCurrentProfile },
+)(EditProfile);

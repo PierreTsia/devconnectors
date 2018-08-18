@@ -83,6 +83,7 @@ class Register extends Component {
                   <TextFieldGroup
                     placeholder="password"
                     name="password"
+                    type="password"
                     value={this.state.password}
                     onChange={this.onChange}
                     error={errors.password}
@@ -92,6 +93,7 @@ class Register extends Component {
                   <TextFieldGroup
                     placeholder="Confirm password"
                     name="password2"
+                    type="password"
                     value={this.state.password2}
                     onChange={this.onChange}
                     error={errors.password2}
