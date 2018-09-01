@@ -15,8 +15,6 @@ export const getCurrentProfile = () => dispatch => {
   axios
     .get("api/profiles")
     .then(res => {
-      console.log("res: ", res);
-
       dispatch({
         type: GET_PROFILE,
         payload: res.data,
@@ -45,7 +43,6 @@ export const clearCurrentProfile = () => {
 //create a profile
 
 export const createProfile = (profileData, history) => dispatch => {
-  console.log("profileData: ", profileData);
   axios
     .post("/api/profiles", profileData)
     .then(res => {
@@ -71,4 +68,46 @@ export const deleteAccount = () => dispatch => {
         dispatch({ type: GET_ERRORS, payload: error });
       });
   }
+};
+
+//add experience
+export const addExperience = (experienceData, history) => dispatch => {
+  axios
+    .post("/api/profiles/experience", experienceData)
+    .then(res => {
+      history.push("/dashboard");
+    })
+    .catch(error => {
+      dispatch({ type: GET_ERRORS, payload: error.response.data });
+    });
+};
+
+//add education
+export const addEducation = (educationData, history) => dispatch => {
+  axios
+    .post("/api/profiles/education", educationData)
+    .then(res => {
+      history.push("/dashboard");
+    })
+    .catch(error => {
+      dispatch({ type: GET_ERRORS, payload: error.response.data });
+    });
+};
+
+//delete experience
+
+export const deleteExperience = (experienceId, history) => dispatch => {
+  axios
+    .delete(`api/experience/${experienceId}`)
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+};
+
+//delete educaction
+
+export const deleteEducation = (educationId, history) => dispatch => {
+  axios
+    .delete(`api/education/${educationId}`)
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
 };
