@@ -1,6 +1,7 @@
 import axios from "axios";
 import {
   GET_PROFILE,
+  GET_PROFILES,
   PROFILE_LOADING,
   CLEAR_CURRENT_PROFILE,
   GET_ERRORS,
@@ -10,10 +11,21 @@ import {
 //Get All Profiles
 
 export const getProfiles = () => dispatch => {
+  dispatch(setProfileLoading());
   axios
     .get("api/profiles/all")
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+    .then(res => {
+      dispatch({
+        type: GET_PROFILES,
+        payload: res.data,
+      });
+    })
+    .catch(err => {
+      dispatch({
+        type: GET_PROFILES,
+        payload: null,
+      });
+    });
 };
 
 //Get Current Profile
