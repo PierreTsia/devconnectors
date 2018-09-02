@@ -7,6 +7,15 @@ import {
   SET_CURRENT_USER,
 } from "./types";
 
+//Get All Profiles
+
+export const getProfiles = () => dispatch => {
+  axios
+    .get("api/profiles/all")
+    .then(res => console.log(res))
+    .catch(err => console.log(err));
+};
+
 //Get Current Profile
 
 export const getCurrentProfile = () => dispatch => {
