@@ -96,18 +96,32 @@ export const addEducation = (educationData, history) => dispatch => {
 
 //delete experience
 
-export const deleteExperience = (experienceId, history) => dispatch => {
+export const deleteExperience = experienceId => dispatch => {
   axios
-    .delete(`api/experience/${experienceId}`)
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+    .delete(`api/profiles/experience/${experienceId}`)
+    .then(res => {
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data,
+      });
+    })
+    .catch(err => {
+      dispatch({ type: GET_ERRORS, payload: err.response.data });
+    });
 };
 
 //delete educaction
 
-export const deleteEducation = (educationId, history) => dispatch => {
+export const deleteEducation = educationId => dispatch => {
   axios
-    .delete(`api/education/${educationId}`)
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+    .delete(`api/profiles/education/${educationId}`)
+    .then(res => {
+      dispatch({
+        type: GET_PROFILE,
+        payload: res.data,
+      });
+    })
+    .catch(err => {
+      dispatch({ type: GET_ERRORS, payload: err.response.data });
+    });
 };
