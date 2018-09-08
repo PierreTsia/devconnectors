@@ -29,46 +29,66 @@ class ProfileHeader extends Component {
                   )}
                 </p>
 
-                {isEmpty(profile.location ? null : <p>{profile.location}</p>)}
+                <p>{profile.location}</p>
 
                 {profile.social ? (
                   <div>
                     <p>
                       {profile.social.website ? (
-                        <a class="text-white p-2" href={profile.social.website}>
-                          <i class="fas fa-globe fa-2x" />
+                        <a
+                          className="text-white p-2"
+                          href={profile.social.website}
+                          target="_blank"
+                        >
+                          <i className="fas fa-globe fa-2x" />
                         </a>
                       ) : null}
 
                       {profile.social.twitter ? (
-                        <a class="text-white p-2" href={profile.social.twitter}>
-                          <i class="fab fa-twitter fa-2x" />
+                        <a
+                          className="text-white p-2"
+                          href={profile.social.twitter}
+                          target="_blank"
+                        >
+                          <i className="fab fa-twitter fa-2x" />
                         </a>
                       ) : null}
 
                       {profile.social.facebook ? (
                         <a
-                          class="text-white p-2"
+                          className="text-white p-2"
                           href={profile.social.facebook}
+                          target="_blank"
                         >
-                          <i class="fab fa-facebook fa-2x" />
+                          <i className="fab fa-facebook fa-2x" />
                         </a>
                       ) : null}
 
                       {profile.social.linkedin ? (
                         <a
-                          class="text-white p-2"
+                          className="text-white p-2"
                           href={profile.social.linkedin}
+                          target="_blank"
                         >
-                          <i class="fab fa-linkedin fa-2x" />
+                          <i className="fab fa-linkedin fa-2x" />
                         </a>
                       ) : null}
                       {profile.social.instagram ? (
                         <a
-                          class="text-white p-2"
+                          className="text-white p-2"
                           href={profile.social.instagram}
+                          target="_blank"
                         >
-                          <i class="fab fa-instagram fa-2x" />
+                          <i className="fab fa-instagram fa-2x" />
+                        </a>
+                      ) : null}
+                      {profile.social.youtube ? (
+                        <a
+                          className="text-white p-2"
+                          href={profile.social.youtube}
+                          target="_blank"
+                        >
+                          <i className="fab fa-youtube fa-2x" />
                         </a>
                       ) : null}
                     </p>
